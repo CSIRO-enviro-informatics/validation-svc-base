@@ -51,7 +51,7 @@ import org.csiro.wdts.validation.utils.VersionParser;
  * 
  */
 public class ValidationController extends SimpleFormController {
-    private XMLValidationWithResolutionService xmlValidationWithResolutionService;
+    protected XMLValidationWithResolutionService xmlValidationWithResolutionService;
     public  String debug;
     public String validationType;
     public String validationVersion;
@@ -317,7 +317,7 @@ public class ValidationController extends SimpleFormController {
     }
 
 
-    private boolean checkIsFileSelected(ValidationFormInput bean) {
+    protected boolean checkIsFileSelected(ValidationFormInput bean) {
         /* Make sure file is selected! */
         if (bean.getFilename().length() != 0) {
             //mv.addObject("isFileSelected", Boolean.TRUE);
@@ -326,7 +326,7 @@ public class ValidationController extends SimpleFormController {
             return false;
         }
     }
-    private boolean checkIsTextInput(ValidationFormInput bean) {
+    protected boolean checkIsTextInput(ValidationFormInput bean) {
         /* Make Text is input! */
         if (bean.isXmltextEmpty()) {
             //mv.addObject("isTextInput", Boolean.FALSE);
@@ -338,7 +338,7 @@ public class ValidationController extends SimpleFormController {
         }
     }
 
-    private boolean checkUploadFileSizeLimit(ValidationResult vr, ValidationFormInput bean) {
+    protected boolean checkUploadFileSizeLimit(ValidationResult vr, ValidationFormInput bean) {
         // checking upload.filesize.cap
         Properties p = (Properties) this.getApplicationContext().getBean("serverConfig");
         long filesizecap = Long.parseLong(p.getProperty("upload.filesize.cap"));
@@ -355,7 +355,7 @@ public class ValidationController extends SimpleFormController {
 
     
 
-    private void chooseOutputMethod(ValidationFormInput bean) {
+    public void chooseOutputMethod(ValidationFormInput bean) {
         if (bean.getOutputMethod().contains("html")) {
             setSuccessView("resultView");
         } else if (bean.getOutputMethod().contains("xml")) {
@@ -365,7 +365,7 @@ public class ValidationController extends SimpleFormController {
         }
     }
 
-    private String getCatalogString(ValidationFormInput bean) {
+    protected String getCatalogString(ValidationFormInput bean) {
         String catalogString = null;
         String[] catalogs = bean.getCatalogs();
         for (int i = 0; i < catalogs.length; i++) {
@@ -384,7 +384,7 @@ public class ValidationController extends SimpleFormController {
         return ruleLocation;
     }
 
-    private String[] resolveCatalogPaths(String catalogs[]) throws IOException {
+    protected String[] resolveCatalogPaths(String catalogs[]) throws IOException {
         //resolve file paths
         //Resource r = rl.getResource(fname);
         String fname = catalogs[0];
@@ -459,7 +459,7 @@ public class ValidationController extends SimpleFormController {
     }
 
     /* Perform Content Validation via Schematron */
-    private boolean handleContentValidation(ValidationResult vr, String strXml, String ruleLocation) throws IOException {
+    public boolean handleContentValidation(ValidationResult vr, String strXml, String ruleLocation) throws IOException {
         InputStream is = null;
         try {
             is = new ByteArrayInputStream(strXml.getBytes("UTF-8"));
@@ -477,7 +477,7 @@ public class ValidationController extends SimpleFormController {
         return result;
     }
 
-    private boolean handleContentValidation(ValidationResult vr, InputStream stream, String ruleLocation) throws IOException {
+    public boolean handleContentValidation(ValidationResult vr, InputStream stream, String ruleLocation) throws IOException {
         //check if dependant service URLs reachable
         URLChecker urlchecker = new URLChecker();
         //default properties for hosts...
@@ -649,7 +649,7 @@ public class ValidationController extends SimpleFormController {
         return false;
     }
 
-    private int countItemsInMessagesIndex(Map<String,List<String>> messages) {
+    protected int countItemsInMessagesIndex(Map<String,List<String>> messages) {
         int count = 0;
 
         for(String key : messages.keySet()) {
@@ -663,7 +663,7 @@ public class ValidationController extends SimpleFormController {
         return count;
     }
 
-    private int countErrorsInMessagesIndex(Map<String,List<String>> messages) {
+    protected int countErrorsInMessagesIndex(Map<String,List<String>> messages) {
         int count = 0;
 
         for(String key : messages.keySet()) {
@@ -682,7 +682,7 @@ public class ValidationController extends SimpleFormController {
     }
 
 
-    private Map<String,List<String>> parseSvrlMessages(File f) throws SAXException, IOException {
+    protected Map<String,List<String>> parseSvrlMessages(File f) throws SAXException, IOException {
         XMLReader xr = XMLReaderFactory.createXMLReader();
         SvrlParser handler = new SvrlParser();
         xr.setContentHandler(handler);
@@ -695,7 +695,7 @@ public class ValidationController extends SimpleFormController {
         return handler.getMessages();
     }
 
-    private boolean handleDependantSvcCheck() {
+    protected boolean handleDependantSvcCheck() {
         //check if dependant service URLs reachable
         URLChecker urlchecker = new URLChecker();
         //default properties for hosts...
@@ -713,13 +713,13 @@ public class ValidationController extends SimpleFormController {
         return connectable;
     }
 
-    private InputStream getContentRulesStream() {
+    protected InputStream getContentRulesStream() {
         PipedInputStream pis = null;
 
         return pis;
     }
 
-    private SchematronEngine initialiseSchematronEngine(String ruleLocation) throws IOException, FileNotFoundException, SAXException, ParserConfigurationException, TransformerConfigurationException {
+    protected SchematronEngine initialiseSchematronEngine(String ruleLocation) throws IOException, FileNotFoundException, SAXException, ParserConfigurationException, TransformerConfigurationException {
         FileInputStream compiledRulesStream;
 
         SchematronEngine schEngine;
@@ -732,7 +732,7 @@ public class ValidationController extends SimpleFormController {
     }
 
 
-    private boolean handleContentValidation_piped(ValidationResult vr, InputStream stream, String ruleLocation) throws IOException {
+    protected boolean handleContentValidation_piped(ValidationResult vr, InputStream stream, String ruleLocation) throws IOException {
         boolean didSchematronInit = false;
         String schematronError = "";
 
@@ -835,7 +835,7 @@ public class ValidationController extends SimpleFormController {
     // now Spring knows how to handle multipart object and convert them
     }
 */
-    private String reverseSlashes(String str) {
+    protected String reverseSlashes(String str) {
         String result = "";
 
         result = str.replace("\\", "/");
